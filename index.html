@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microphone Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            text-align: center;
+       background-image: url( https://images.pexels.com/photos/164879/pexels-photo-164879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)
+
+
+ }
+        #mic-icon {
+            font-size: 100px;
+            color: #007bff;
+            margin: 20px;
+        }
+        #status-text {
+            font-size: 24px;
+            color: #333;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <i id="mic-icon" class="fas fa-microphone"></i>
+                <p id="status-text">Testing Microphone...</p>
+                <button id="start-button" class="btn btn-primary">Start Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let mediaStreamSource;
+        let analyser;
+
+        async function startMicrophoneTest() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                mediaStreamSource = audioContext.createMediaStreamSource(stream);
+
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                mediaStreamSource.connect(analyser);
+
+                document.getElementById('start-button').style.display = 'none';
+                document.getElementById('mic-icon').style.color = 'green';
+                document.getElementById('status-text').textContent = 'Microphone is working!';
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                document.getElementById('mic-icon').style.color = 'red';
+                document.getElementById('status-text').textContent = 'Microphone access denied!';
+            }
+        }
+
+        document.getElementById('start-button').addEventListener('click', startMicrophoneTest);
+    </script>
+</body>
+</html>
